@@ -1,0 +1,131 @@
+services:
+  postgresql:
+    image: docker.io/library/postgres:16-alpine
+    container_name: postgresql2
+    env_file:
+    - .env
+    environment:
+      POSTGRES_DB: ${PG_DB:-authentik}
+      POSTGRES_PASSWORD: ${DB_PASSWORD:?database password required}
+      POSTGRES_USER: ${DB_USERNAME:?A username is required}
+    healthcheck:
+      interval: 30s
+      retries: 5
+      start_period: 20s
+      test:
+      - CMD-SHELL
+      - pg_isready -d $${POSTGRES_DB} -U $${POSTGRES_USER}
+      timeout: 5s
+    restart: unless-stopped
+    volumes:
+    - database:/var/lib/postgresql/data
+  server:
+    command: server
+    depends_on:
+      postgresql:
+        condition: service_healthy
+    env_file:
+    - .env
+    environment:
+      AUTHENTIK_POSTGRESQL__HOST: postgresql
+      AUTHENTIK_POSTGRESQL__NAME: ${PG_DB:-authentik}
+      AUTHENTIK_POSTGRESQL__PASSWORD: ${DB_PASSWORD}
+      AUTHENTIK_POSTGRESQL__USER: ${DB_USERNAME:-authentik}
+      AUTHENTIK_SECRET_KEY: ${AUTHENTIK_SECRET_KEY:?secret key required}
+    image: ${AUTHENTIK_IMAGE:-ghcr.io/goauthentik/server}:${AUTHENTIK_TAG:-2026.8.1}
+    ports:
+    - ${COMPOSE_PORT_HTTP:-9000}:9000
+    - ${COMPOSE_PORT_HTTPS:-9443}:9443
+    restart: unless-stopped
+    shm_size: 512mb
+    volumes:
+    - ./data:/data
+    - ./custom-templates:/templates
+  worker:
+    command: worker
+    depends_on:
+      postgresql:
+        condition: service_healthy
+    env_file:
+    - .env
+    environment:
+      AUTHENTIK_POSTGRESQL__HOST: postgresql
+      AUTHENTIK_POSTGRESQL__NAME: ${PG_DB:-authentik}
+      AUTHENTIK_POSTGRESQL__PASSWORD: ${DB_PASSWORD}
+      AUTHENTIK_POSTGRESQL__USER: ${DB_USERNAME:-authentik}
+      AUTHENTIK_SECRET_KEY: ${AUTHENTIK_SECRET_KEY:?secret key required}
+      DOCKER_HOST: "http://socket-proxy:2375"
+    image: ${AUTHENTIK_IMAGE:-ghcr.io/goauthentik/server}:${AUTHENTIK_TAG:-2026.8.1}
+    restart: unless-stopped
+    shm_size: 512mb
+    user: root
+    volumes:
+    # - /var/run/docker.sock:/var/run/docker.sock
+    - ./data:/data
+    - ./certs:/certs
+    - ./custom-templates:/templates
+
+  socket-proxy:
+    image: lscr.io/linuxserver/socket-proxy:latest
+    container_name: socket-proxy
+    environment:
+      - ALLOW_ARCHIVE=0 #optional
+      - ALLOW_CHANGES=0 #optional
+      - ALLOW_EXPORT=0 #optional
+      - ALLOW_LOGS=0 #optional
+      - ALLOW_PAUSE=0 #optional
+      - ALLOW_RESTARTS=0 #optional
+      - ALLOW_STOP=0 #optional
+      - ALLOW_START=0 #optional
+      - ALLOW_TOP=0 #optional
+      - ALLOW_UNPAUSE=0 #optional
+      - AUTH=0 #optional
+      - BUILD=0 #optional
+      - COMMIT=0 #optional
+      - CONFIGS=0 #optional
+      - CONTAINERS=1 #optional
+      - DISABLE_IPV6=0 #optional
+      - DISTRIBUTION=0 #optional
+      - EVENTS=1 #optional
+      - EXEC=0 #optional
+      - IMAGES=1 #optional
+      - INFO=0 #optional
+      - LOG_LEVEL=info #optional
+      - NETWORKS=0 #optional
+      - NODES=0 #optional
+      - PING=1 #optional
+      - PLUGINS=0 #optional
+      - POST=0 #optional
+      - SECRETS=0 #optional
+      - SERVICES=0 #optional
+      - SESSION=0 #optional
+      - SWARM=0 #optional
+      - SYSTEM=1 #optional
+      - TASKS=0 #optional
+      - TZ=Etc/UTC #optional
+      - VERSION=1 #optional
+      - VOLUMES=0 #optional
+      - LIBPOD_CONTAINERS=1 #optional
+      - LIBPOD_EVENTS=0 #optional
+      - LIBPOD_EXEC=0 #optional
+      - LIBPOD_GENERATE=0 #optional
+      - LIBPOD_IMAGES=1 #optional
+      - LIBPOD_INFO=0 #optional
+      - LIBPOD_MANIFESTS=0 #optional
+      - LIBPOD_NETWORKS=0 #optional
+      - LIBPOD_PING=1 #optional
+      - LIBPOD_PLAY=0 #optional
+      - LIBPOD_PODS=0 #optional
+      - LIBPOD_SECRETS=0 #optional
+      - LIBPOD_SYSTEM=1 #optional
+      - LIBPOD_VERSION=1 #optional
+      - LIBPOD_VOLUMES=0 #optional
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+    restart: unless-stopped
+    read_only: true
+    tmpfs:
+      - /run
+volumes:
+  database:
+    driver: local

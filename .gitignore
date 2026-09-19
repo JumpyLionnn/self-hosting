@@ -1,0 +1,22 @@
+# Ignore everything
+*
+
+# But not these files
+!/.gitignore
+!docker-compose.yml
+!/gbackup.sh
+!/utilities.sh
+!backup.sh
+!restore.sh
+!example.env
+!/*/*.md
+!/README.md
+!/cronjobs.txt
+
+# Immich
+!/immich/config.json
+
+# Allow things in subdirectories
+!*/
+# except explicitly directories starting with a . (like .local)
+.*/
