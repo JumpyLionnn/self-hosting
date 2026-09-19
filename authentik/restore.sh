@@ -1,7 +1,7 @@
 #!/usr/bin/bash
 
 . "$(dirname $0)/.env"
-bash ~/gbackup.sh restore authentik -i ./certs -i ./custom-templates -i ./data --pgsql "postgresql,$DB_USERNAME"
+bash ~/gbackup.sh restore authentik -i ./.env -i ./certs -i ./custom-templates -i ./data --pgsql "postgresql,$DB_USERNAME"
 # read_key() {
 #     local -n rkey="$1"
 #     read -rsn1 rkey  # Read first byte (escape)

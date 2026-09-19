@@ -1,7 +1,7 @@
 #!/usr/bin/bash
 
 . "$(dirname $0)/.env"
-bash ~/gbackup.sh backup immich -i "$UPLOAD_LOCATION" --exclude "$UPLOAD_LOCATION/thumbs/" --exclude "$UPLOAD_LOCATION/encoded-video/" --pgsql "database,$DB_USERNAME"
+bash ~/gbackup.sh backup immich -i "$UPLOAD_LOCATION" -i ./.env --exclude "$UPLOAD_LOCATION/thumbs/" --exclude "$UPLOAD_LOCATION/encoded-video/" --pgsql "database,$DB_USERNAME"
 
 # . "$(dirname "$0")/.env"
 # . ~/.env
