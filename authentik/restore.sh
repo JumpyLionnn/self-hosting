@@ -3,10 +3,13 @@
 # . "$(dirname $0)/.env"
 # bash ~/gbackup.sh restore authentik -i ./.env -i ./certs -i ./custom-templates -i ./data --pgsql "postgresql,$DB_USERNAME"
 . ../gbackup.sh
-
+echo "Restoring files"
 file_backup restore authentik -i ./.env -i ./certs -i ./custom-templates -i ./data -i ./database-backup
+
+echo "Restoreing Database"
+ls -A ./
 . "$(dirname $0)/.env"
-psql_backup postgresql "$DB_USERNAME"
+psql_restore postgresql "$DB_USERNAME"
 # read_key() {
 #     local -n rkey="$1"
 #     read -rsn1 rkey  # Read first byte (escape)

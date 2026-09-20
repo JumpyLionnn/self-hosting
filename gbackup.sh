@@ -70,8 +70,8 @@ file_backup() {
 }
 
 psql_backup() {
-    CONTAINER_NAME="$1"
-    DB_USERNAME="$2"
+    local CONTAINER_NAME="$1"
+    local DB_USERNAME="$2"
     echo "Backing up $CONTAINER_NAME"
     mkdir -p database-backup
     docker compose up -d "$CONTAINER_NAME"
@@ -80,13 +80,28 @@ psql_backup() {
     has_database=true
 }
 
-psql_restore() {
-    CONTAINER_NAME="$1"
-    DB_USERNAME="$2"
-    echo "Restoring database $CONTAINER_NAME"
-    docker compose up -d "$CONTAINER_NAME"
+# Prints the container name from the service name
+docker_container_name() {
+    local SERVICE=$1
+    echo "[$(docker compose ps --format json | sed '$!s/$/,/')]" | jq -r "map(select(.Service==\"$SERVICE\"))[0].Name"
+}
 
-    zstd --decompress --stdout "./database-backup/$CONTAINER_NAME-database.sql.zstd" | docker exec -i $CONTAINER_NAME psql --username "$DB_USERNAME" 1> /dev/null
+wait_to_healthy() {
+    local CONTAINER_NAME=$1
+    until [ "$(docker inspect -f {{.State.Health.Status}} $CONTAINER_NAME)" == "healthy" ]; do
+        sleep 0.3;
+    done;
+}
+
+psql_restore() {
+    local SERVICE_NAME="$1"
+    local DB_USERNAME="$2"
+    echo "Restoring database $SERVICE_NAME"
+    docker compose up -d "$SERVICE_NAME"
+    local CONTAINER_NAME=$(docker_container_name "$SERVICE_NAME")
+    wait_to_healthy "$CONTAINER_NAME"
+    sleep 0.3
+    zstd --decompress --stdout "./database-backup/$SERVICE_NAME-database.sql.zstd" | docker compose exec -i $SERVICE_NAME psql --username "$DB_USERNAME" 1> /dev/null
 }
 
 
@@ -144,9 +159,6 @@ restore_backup() {
             exit 1
         fi
     fi
-
-    # Making sure services won't interrupt the extraction
-    docker compose down
 
     echo "Extracting..."
     borg extract "$BORG_REPO::$archive_name"

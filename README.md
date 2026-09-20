@@ -2,8 +2,10 @@
 ## Restoring
 Install docker, docker compose and make sure you can run it without elevated root privilages
 Install borg and run the restore command in each sub directory
-LIMITATION: TODO: you must clone the repo into the user's home directory
-TODO: Remove dependency of the app .env from the restore and backup scripts
+
+Make sure you pull all docker images to the latest version
+
+After all services are up, change the provider url in authentik so oauth can work in the applications again(in case the ip/domain changed)
 
 
 ## Notes
