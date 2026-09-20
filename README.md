@@ -1,6 +1,9 @@
 
-
+## Restoring
+Install docker, docker compose and make sure you can run it without elevated root privilages
 Install borg and run the restore command in each sub directory
+LIMITATION: TODO: you must clone the repo into the user's home directory
+TODO: Remove dependency of the app .env from the restore and backup scripts
 
 
 ## Notes

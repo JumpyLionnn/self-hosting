@@ -92,6 +92,8 @@ services:
     restart: always
     healthcheck:
       disable: false
+    ports:
+      - 3003:3003
     device_cgroup_rules:
       - c 189:* rmw
     devices:
