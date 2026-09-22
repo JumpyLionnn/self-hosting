@@ -221,7 +221,7 @@
   },
   "oauth": {
     "allowInsecureRequests": false,
-    "autoLaunch": false,
+    "autoLaunch": true,
     "autoRegister": true,
     "buttonText": "Login with OAuth",
     "clientId": "$OAUTH_CLIENT_ID",
@@ -243,7 +243,7 @@
     "tokenEndpointAuthMethod": "client_secret_post"
   },
   "passwordLogin": {
-    "enabled": true
+    "enabled": false
   },
   "reverseGeocoding": {
     "enabled": true
