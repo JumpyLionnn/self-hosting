@@ -63,13 +63,13 @@
     "preview": {
       "format": "jpeg",
       "progressive": false,
-      "quality": 80,
-      "size": 1440
+      "quality": 75,
+      "size": 1080
     },
     "thumbnail": {
       "format": "webp",
       "progressive": false,
-      "quality": 80,
+      "quality": 60,
       "size": 250
     }
   },
@@ -249,7 +249,7 @@
     "enabled": true
   },
   "server": {
-    "externalDomain": "",
+    "externalDomain": "$EXTERNAL_DOMAIN",
     "loginPageMessage": "",
     "publicUsers": true
   },
