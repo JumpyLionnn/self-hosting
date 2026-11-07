@@ -1,4 +1,4 @@
-http://192.168.100.125:4544 {
+:4544 {
     # directive execution order is only as stated if enclosed with route.
     route {
         request_header -Remote-User
