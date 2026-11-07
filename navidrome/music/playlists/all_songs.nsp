@@ -1,0 +1,7 @@
+{
+    "name": "All Songs",
+    "all": [{ "gt": { "playCount": -1 } }],
+    "sort": "random",
+    "limit": 1500
+}
+

@@ -16,6 +16,11 @@
 # Immich
 !/immich/config.json
 
+# Navidrome
+!/navidrome/Caddyfile
+!/navidrome/data/navidrome.toml
+!/navidrome/music/playlists/*
+
 # Allow things in subdirectories
 !*/
 # except explicitly directories starting with a . (like .local)

@@ -1,3 +1,8 @@
+networks:
+  internal: {}
+  navidrome_network: # need to get the authetik ip for navidrome reverse proxy
+    name: navidrome_network
+
 services:
   postgresql:
     image: docker.io/library/postgres:16-alpine
@@ -8,6 +13,8 @@ services:
       POSTGRES_DB: ${PG_DB:-authentik}
       POSTGRES_PASSWORD: ${DB_PASSWORD:?database password required}
       POSTGRES_USER: ${DB_USERNAME:?A username is required}
+    networks:
+      - internal
     healthcheck:
       interval: 30s
       retries: 5
@@ -19,8 +26,11 @@ services:
     restart: unless-stopped
     volumes:
     - ./postgres:/var/lib/postgresql/data
-  server:
+  authentik:
     command: server
+    networks:
+      - internal
+      - navidrome_network
     depends_on:
       postgresql:
         condition: service_healthy
@@ -46,6 +56,8 @@ services:
     depends_on:
       postgresql:
         condition: service_healthy
+    networks:
+      - internal
     env_file:
     - .env
     environment:
@@ -68,6 +80,8 @@ services:
   socket-proxy:
     image: lscr.io/linuxserver/socket-proxy:latest
     container_name: socket-proxy
+    networks:
+      - internal
     environment:
       - ALLOW_ARCHIVE=0 #optional
       - ALLOW_CHANGES=0 #optional
@@ -126,3 +140,4 @@ services:
     read_only: true
     tmpfs:
       - /run
+

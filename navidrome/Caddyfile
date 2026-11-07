@@ -1,0 +1,39 @@
+http://192.168.100.125:4544 {
+    # directive execution order is only as stated if enclosed with route.
+    route {
+        request_header -Remote-User
+        # always forward outpost path to actual outpost
+        reverse_proxy /outpost.goauthentik.io/* http://authentik:9000
+
+        # forward authentication to outpost
+        forward_auth http://authentik:9000 {
+            uri /outpost.goauthentik.io/auth/caddy
+
+            # capitalization of the headers is important, otherwise they will be empty
+            copy_headers X-Authentik-Username>Remote-User
+            # Add the 'authorization' header to the list if you need proxy providers which
+            # send a custom HTTP-Basic Authentication header based on values from authentik
+
+            # optional, in this config trust all private ranges, should probably be set to the outposts IP
+            trusted_proxies private_ranges
+            
+            # Some clients that claim to support basicauth still expect a subsonic
+            # response in case of authentication failure instead of a proper basicauth
+            # response.
+            #@auth_error {
+            #    status 1xx 3xx 4xx 5xx
+            #    #header Authorization *Basic*
+            #}
+            #handle_response @auth_error {
+            #    respond <<SUBSONICERR
+            #        <subsonic-response xmlns="http://subsonic.org/restapi" status="failed" version="1.16.1" type="proxy-auth" serverVersion="n/a" openSubsonic="true">
+            #        <error code="40" message="Invalid credentials or unsupported client"></error>
+            #        </subsonic-response>
+            #    SUBSONICERR 200
+            #}
+        }
+
+        # actual site configuration below, for example
+        reverse_proxy http://navidrome:4533
+    }
+}

@@ -1,0 +1,35 @@
+networks:
+  internal: {}
+  navidrome_network: # need to get the authetik ip for navidrome reverse proxy
+    name: navidrome_network
+    external: true
+services:
+  navidrome:
+    image: navidrome/navidrome:latest
+    # user: 1000:1000 # must own the data folder and be able to read music folder(s). See Permissions below
+    #ports:
+    #  - "4533:4533"
+    networks:
+      - internal
+    restart: unless-stopped
+    environment:
+      ND_LOGLEVEL: info
+    # env_file: "navidrome.env"
+    volumes:
+      - "./data:/data"
+      - "./music:/music:ro"
+  navidrome_proxy:
+    image: caddy
+    container_name: caddy
+    networks:
+      - internal
+      - navidrome_network
+    restart: unless-stopped
+    ports:
+      - 4544:4544
+      - 4545:80
+      # - 443:443
+    volumes:
+      - ./caddy_data:/data
+      - ./caddy_config:/config
+      - ./Caddyfile:/etc/caddy/Caddyfile:ro

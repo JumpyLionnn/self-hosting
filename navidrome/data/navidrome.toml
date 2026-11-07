@@ -1,0 +1,193 @@
+
+LogLevel = "info"
+
+EnableExternalServices = true
+Agents="deezer,lastfm,listenbrainz"
+EnableGravatar = false
+
+# Every 30 minutes, check if the database query statistics are more than 24 hours old or were marked stale by a database change, and refresh them with SQLite’s ANALYZE. Navidrome skips the check while a scan runs. Stale statistics can make queries slow on large libraries
+EnableScheduledDBAnalyze = true
+
+AlbumPlayCountMode="absolute"
+EnableFavourites = true
+RecentlyAddedByModTime = false
+
+
+# Enable 5-star ratings in the UI
+EnableStarRating = true
+# Enable/disable scrobble history
+EnableScrobbleHistory = true
+# Enable the Sharing feature
+EnableSharing = true
+
+# Tags = 
+Tags.Artist.Split = [",", " feat. ", " feat ", " ft. ", " ft ", "; "]
+Tags.AlbumArtist.Split = [',']
+Tags.Genre.Split = [',']
+
+AuthRequestLimit=5
+AuthWindowLength="20s"
+
+# PlaylistsPath = "./playlists"
+AutoImportPlaylists=true
+MaxSidebarPlaylists = 100
+DefaultPlaylistPublicVisibility=false
+
+AutoTranscodeDownload=false
+# Enables transcoding configuration in the UI
+EnableTranscodingConfig = false
+
+LyricsPriority = ".ttml,.yaml,.yml,.elrc,.lrc,.srt,.txt,embedded"
+ArtistArtPriority="artist.*, album/artist.*, external"
+CoverArtPriority="cover.*, folder.*, front.*, embedded, external"
+UICoverArtSize=320
+CoverArtQuality=75
+DiscArtPriority = "disc*.*, cd*.*, cover.*, folder.*, front.*, discsubtitle, embedded"
+EnableM3UExternalAlbumArt = false
+EnableMediaFileCoverArt = true
+# Size of image (art work) cache. Set to "0" to disable cache
+ImageCacheSize = "100MB"
+EnableArtworkPrecache = true
+EnableArtworkUpload = true
+MaxImageUploadSize = "10MB"
+MaxImageSize = "20MB"
+EnableCoverAnimation = true
+
+# Encode resized cover art as WebP instead of JPEG/PNG. Produces smaller images, at the cost of more CPU when resizing. Some older clients may not be able to display WebP images
+EnableWebPEncoding = false
+
+# Sort names containing numbers in human order (Foo 2 before Foo 10). Off by default because it can slow down large libraries, see #6015
+EnableNaturalSorting = false
+# List of ignored articles when sorting/indexing artists
+IgnoredArticles = "The El La Los Las Le Les Os As O A"
+PreferSortTags = false
+
+SessionTimeout = "48h"
+
+SmartPlaylistRefreshDelay = "5s"
+
+
+# Enable/disable the Now Playing feature that tracks what songs users are currently listening to. When disabled, the “Now Playing” functionality and admin panel will be unavailable
+EnableNowPlaying = true
+
+# Enable ReplayGain options in the UI
+EnableReplayGain = true
+
+EnableDownloads = true
+
+DefaultDownsamplingFormat = "opus"
+DefaultLanguage = "en"
+DefaultTheme = "Dark"
+DefaultShareExpiration = "8760h" # 1 year
+DefaultDownloadableShare = false
+DefaultUIVolume = 80
+
+#ArtistImageFolder=""
+
+# Enable regular users to edit their details and change their password
+EnableUserEditing = false
+
+# MPVPath = ""
+# MPVCmdTemplate = "mpv --audio-device=%d --no-audio-display %f --input-ipc-server=%s"
+
+TranscodingCacheSize = "100MB"
+
+
+UIPlaybackReportInterval = "1m"
+UISearchDebounceMs = 200
+UIWelcomeMessage = ""
+
+
+[Matcher]
+FuzzyThreshold = 85
+PreferStarred = true
+
+[Plugins]
+Enabled = true
+Folder = "<DataFolder>/plugins"
+AutoReload = false
+LogLevel = "LogLevel"
+CacheSize = "200MB"
+
+[Deezer]
+Enabled = true
+Language = "en"
+
+[LastFM]
+Enabled = true
+ApiKey = ""
+Secret = ""
+Language = "en"
+ScrobbleFirstArtistOnly = false
+
+[ListenBrainz]
+Enabled = true
+BaseURL = "https://api.listenbrainz.org/1/"
+ArtistAlgorithm = "session_based_days_9000_session_300_contribution_5_threshold_15_limit_50_skip_30"
+TrackAlgorithm = "session_based_days_9000_session_300_contribution_5_threshold_15_limit_50_skip_30"
+
+[Search]
+Backend = "fts"
+FullString = false
+
+
+[Scanner]
+Enabled = true
+Schedule = 0
+WatcherWait = "5s"
+ScanOnStartup = true
+ArtistJoiner = " • "
+ArtistSplitExceptions = "AC/DC"
+FollowSymlinks = true
+IgnoreDotFolders = true
+PurgeMissing = "never"
+
+[Transcoding]
+EnableCancellation = false
+MaxConcurrent = 0
+MaxConcurrentPerUser = 2
+
+
+[ExtAuth]
+# Comma separated list of IP CIDRs (or when listening on a UNIX socket the special value @) which are allowed to use reverse proxy authentication. Empty means “deny all”. Click here for details. Note: This option is unnecessary for most reverse proxy setups, only for authenticating reverse proxies.
+TrustedSources = "0.0.0.0/0"
+# HTTP header containing the user name from an authenticating proxy. Click here for details.
+UserHeader = "Remote-User"
+# URL to redirect users to after logout when using externalized authentication. Allows completing logout from the external auth provider (SSO, OIDC, etc.)
+LogoutURL = ""
+
+[Prometheus]
+Enabled = false
+MetricsPath = "/metrics"
+Password = false
+
+[Subsonic]
+AppendSubtitle = true
+ArtistParticipations = false
+AppendAlbumVersion = true
+DefaultReportRealPath = false
+EnableAverageRating = true
+LegacyClients = "DSub"
+MinimalClients = "SubMusic"
+
+
+[Jukebox]
+Enabled = false
+AdminOnly = true
+# Devices =
+# Default =
+
+[Backup]
+#disabled
+Path = ""
+Schedule = ""
+Count = 0
+
+[Jellyfin]
+Enabled = false
+ServerName = ""
+ExposedPublicUsers = ""
+AutoDiscovery = false
+QuickConnect = true
+MaxConcurrentStreams = 2
+
