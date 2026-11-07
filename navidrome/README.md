@@ -12,3 +12,4 @@ application password is an authentik application password assigned to each user
 ## TODO
 configure `ExAuth.LogoutURL` to authentik url
 Add https://github.com/NeptuneHub/AudioMuse-AI-NV-plugin plugin
+in Authentik find a way to use always the local ip in the navidrome caddy provider config `Forward Auth (single application)` > `External Host`
